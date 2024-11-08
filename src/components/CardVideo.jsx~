@@ -1,0 +1,254 @@
+import React, {useEffect, useState} from 'react';
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import {useLocation, useNavigate} from 'react-router-dom'; // Importer useLocation et useNavigate
+import {getAllVideos, fetchFile} from "../apiConfig/services";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+
+const CardVideo = () => {
+    const [videos, setVideos] = useState([]);
+    const [covers, setCovers] = useState({});
+    const [loadingCovers, setLoadingCovers] = useState({});
+    const [selectedType, setSelectedType] = useState('All');
+    const [selectedKeywords, setSelectedKeywords] = useState([]);
+    const [loading, setLoading] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const videosPerPage = 12;
+    const location = useLocation();
+    const navigate = useNavigate();
+    const isHomePage = location.pathname === '/home' || location.pathname === '/';
+    const isVideosPage = location.pathname === '/videos';
+
+    // Filtrage des vidéos par type et mots-clés
+    const filteredVideos = videos.filter(video =>
+        (selectedType === 'All' || video.typeFiche === selectedType) &&
+        (selectedKeywords.length === 0 || selectedKeywords.some(keyword => video.nom_dom.includes(keyword)))
+    );
+
+    const displayedVideos = isHomePage ? filteredVideos.slice(0, 8) : filteredVideos;
+
+    const indexOfLastVideo = currentPage * videosPerPage;
+    const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
+    const currentVideos = isVideosPage ? displayedVideos.slice(indexOfFirstVideo, indexOfLastVideo) : displayedVideos;
+
+    const totalPages = Math.ceil(displayedVideos.length / videosPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleVoirPlusClick = () => {
+        navigate('/videos');
+    };
+
+    const handleKeywordChange = (keyword) => {
+        setSelectedKeywords(prevKeywords =>
+            prevKeywords.includes(keyword)
+                ? prevKeywords.filter(kw => kw !== keyword)
+                : [...prevKeywords, keyword]
+        );
+    };
+
+    const handleClearFilters = () => {
+        setSelectedKeywords([]);
+    };
+
+    const handleVideoClick = (videoId) => {
+        // Redirection vers la page de détails de la vidéo
+        navigate(`/videos/${videoId}`);
+    };
+
+    useEffect(() => {
+        const fetchVideos = async () => {
+            try {
+                const data = await getAllVideos();
+                setVideos(data);
+                setLoading(false);
+
+                // Initialiser les couvertures en état de chargement
+                const initialLoadingCovers = data.reduce((acc, video) => {
+                    acc[video.id_sup] = true;
+                    return acc;
+                }, {});
+                setLoadingCovers(initialLoadingCovers);
+
+                // Récupérer les couvertures pour chaque vidéo
+                const coverPromises = data.map(async (video) => {
+                    if (video.couverture_fiche) {
+                        const coverUrl = await fetchFile(video.couverture_fiche, "couverture");
+                        return {id_sup: video.id_sup, coverUrl};
+                    }
+                    return {id_sup: video.id_sup, coverUrl: null};
+                });
+
+                const coversData = await Promise.all(coverPromises);
+                const coversDict = coversData.reduce((acc, {id_sup, coverUrl}) => {
+                    acc[id_sup] = coverUrl;
+                    return acc;
+                }, {});
+
+                setCovers(coversDict);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des vidéos', error);
+                setLoading(false);
+            }
+        };
+
+        fetchVideos();
+    }, [setHasVideos]);
+
+    const handleImageLoaded = (videoId) => {
+        setLoadingCovers(prevLoadingCovers => ({
+            ...prevLoadingCovers,
+            [videoId]: false
+        }));
+    };
+
+    const videoTypes = [...new Set(videos.map(video => video.typeFiche))]; // Liste des types uniques
+
+    // Si le chargement est en cours
+    if (loading) {
+        return <div className="text-center my-10"></div>;
+    }
+
+    // Si aucune vidéo n'est disponible
+    if (videos.length === 0) {
+        return <div className="text-center my-10">Aucune vidéo disponible.</div>;
+    }
+
+    return (
+        <div className="container mx-auto flex flex-wrap mt-5">
+            {/* Affiche le filtre uniquement sur la page '/videos' */}
+            {isVideosPage && (
+                <div className="w-full md:w-1/5 mb-8 md:mb-0 md:pr-8">
+                    <div className="flex flex-col mb-8">
+                        <div className="flex flex-wrap gap-4 mb-6">
+                            <button
+                                onClick={() => setSelectedType('All')}
+                                className={`block py-2 px-4 rounded-full ${selectedType === 'All' ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                            >
+                                Tous les domaines
+                            </button>
+                            {videoTypes.map(type => (
+                                <button
+                                    key={type}
+                                    onClick={() => setSelectedType(type)}
+                                    className={`block py-2 px-4 rounded-full ${selectedType === type ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <p className="font-semibold mb-2">Filtrer par titre:</p>
+                            {/* Utiliser Set pour éviter les doublons */}
+                            {Array.from(new Set(videos.map(video => video.nom_dom))).map(domain => (
+                                <label key={domain} className="flex items-center mb-2">
+                                    <input
+                                        type="checkbox"
+                                        value={domain}
+                                        checked={selectedKeywords.includes(domain)}
+                                        onChange={() => handleKeywordChange(domain)}
+                                        className="mr-2"
+                                    />
+                                    {domain}
+                                </label>
+                            ))}
+                            <button
+                                onClick={handleClearFilters}
+                                className="mt-4 bg-red-500 text-white py-2 px-4 rounded"
+                            >
+                                Effacer les filtres
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div className={`w-full ${isVideosPage ? 'md:w-4/5' : 'md:w-full'} flex flex-col`}>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {currentVideos.map(video => (
+                        <div
+                            key={video.id_sup}
+                            className="bg-blue-50 rounded-xl overflow-hidden h-80 mb-5 cursor-pointer relative"
+                            onClick={() => handleVideoClick(video.id_sup)} // Redirection ajoutée ici
+                        >
+                            <div className="relative h-56 flex justify-center items-center">
+                                {loadingCovers[video.id_sup] && (
+                                    <div
+                                        className="spinner border-t-2 border-primary border-solid rounded-full h-12 w-12 animate-spin"></div>
+                                )}
+                                <div
+                                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                    <PlayArrowRoundedIcon style={{fontSize: 150}} className="text-blue-300"/>
+                                </div>
+                                <img
+                                    src={covers[video.id_sup] || 'fallback-image-url.jpg'}
+                                    alt={video.nom_sup}
+                                    className={`object-cover w-full h-full ${loadingCovers[video.id_sup] ? 'hidden' : ''}`}
+                                    onLoad={() => handleImageLoaded(video.id_sup)}
+                                />
+                            </div>
+                            <div className="p-4">
+                                <p className="bg-blue-200 font-bold inline py-1 px-3 text-[10px] rounded-full">{video.nom_dom}</p>
+                                <h2 className="text-xl font-bold">{video.nom_sup}</h2>
+                                <p className="text-gray-500">{video.nom_auteur}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                {isVideosPage && (
+                    <div className="flex justify-center mt-5">
+                        <nav aria-label="Page navigation">
+                            <ul className="flex items-center space-x-1">
+                                <li>
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className={`px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-white'}`}
+                                    >
+                                        <ChevronLeftRoundedIcon/>
+                                    </button>
+                                </li>
+                                {[...Array(totalPages).keys()].map(pageNumber => (
+                                    <li key={pageNumber + 1}>
+                                        <button
+                                            onClick={() => handlePageChange(pageNumber + 1)}
+                                            className={`px-3 py-1 rounded ${currentPage === pageNumber + 1 ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                                        >
+                                            {pageNumber + 1}
+                                        </button>
+                                    </li>
+                                ))}
+                                <li>
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className={`px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-white'}`}
+                                    >
+                                        <ChevronRightRoundedIcon/>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                )}
+
+                {/* Affiche le bouton "Voir Plus" uniquement si c'est la page d'accueil */}
+                {isHomePage && (
+                    <div className="flex justify-center mt-5">
+                        <button
+                            className="bg-gray-800 text-white font-bold py-3 pl-3 rounded-[10px] flex items-center"
+                            onClick={handleVoirPlusClick}>
+                            Voir plus
+                            <ChevronRightRoundedIcon className="ml-2"/>
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default CardVideo;

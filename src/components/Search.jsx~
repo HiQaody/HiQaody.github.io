@@ -1,0 +1,102 @@
+import React, { useState, useEffect } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import { getAllDomaines } from '../apiConfig/services'; // Importer la fonction getAllDomaines
+
+function Search() {
+    const [isFocused, setIsFocused] = useState(false);
+    const [categories, setCategories] = useState([]); // État pour stocker les catégories
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    // Utiliser useEffect pour récupérer les catégories dès le montage du composant
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await getAllDomaines();
+                setCategories(data); // Stocker les catégories récupérées dans l'état
+            } catch (error) {
+                console.error('Erreur lors de la récupération des catégories', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center pt-8 pb-16 bg-primary px-2 md:px-0">
+            {/* Sélecteur de catégorie pour les écrans inférieurs à sm */}
+            <div
+                className="relative flex items-center bg-blue-100 bg-opacity-15 rounded-full border-2 border-blue-300 w-full max-w-4xl mx-auto sm:hidden"
+                style={{ marginBottom: '16px' }} // Ajout de l'espace de 16px
+            >
+                <div className="relative flex items-center px-4 py-2 bg-transparent text-white border-none rounded-full h-16 flex-shrink-0 w-full">
+                    <CategoryOutlinedIcon className="text-white mr-2" />
+                    <select
+                        className={`bg-transparent text-white outline-none h-full w-full px-4 py-2 rounded-full transition-all duration-300 ${
+                            isFocused ? 'select-expanded' : ''
+                        }`}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)} // Gérer la sélection de catégorie
+                        style={{ width: '200px' }} // Garde la taille du select fixe
+                    >
+                        <option value="" className="text-gray-700 hidden lg:block" disabled selected>
+                            Catégorie
+                        </option>
+                        {/* Remplacer les options statiques par les catégories récupérées */}
+                        {categories.map((category) => (
+                            <option key={category.id_dom} value={category.id_dom} className="text-gray-900 bg-white hover:bg-blue-100">
+                                {category.nom_dom}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {/* Champ de recherche et sélecteur pour les écrans supérieurs à sm */}
+            <div
+                className="relative flex items-center bg-blue-100 bg-opacity-15 rounded-full border-2 border-blue-300 w-full max-w-4xl mx-auto sm:flex"
+            >
+                <div className="relative flex items-center px-4 py-2 bg-transparent text-white border-none rounded-l-full h-16 flex-shrink-0 hidden sm:flex">
+                    <CategoryOutlinedIcon className="text-white mr-2 lg:hidden" />
+                    <select
+                        className={`bg-transparent text-white outline-none h-full px-4 py-2 rounded-l-full transition-all duration-300 ${
+                            isFocused ? 'select-expanded' : ''
+                        }`}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)} // Gérer la sélection de catégorie
+                        style={{ width: '150px' }} // Garde la taille du select fixe
+                    >
+                        <option value="" className="text-gray-700 hidden lg:block" disabled selected>
+                            Catégorie
+                        </option>
+                        {/* Remplacer les options statiques par les catégories récupérées */}
+                        {categories.map((category) => (
+                            <option key={category.id_dom} value={category.id_dom} className="text-gray-900 bg-white hover:bg-blue-100">
+                                {category.nom_dom}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Champ de recherche */}
+                <input
+                    type="search"
+                    placeholder="Rechercher un livre..."
+                    className="p-4 flex-grow border-none bg-transparent text-white placeholder-gray-300 h-16"
+                />
+
+                {/* Bouton de recherche */}
+                <button className="flex items-center px-4 py-2 bg-blue-300 text-gray-800 rounded-r-full font-bold h-16 flex-shrink-0">
+                    <SearchIcon className="text-gray-800" />
+                    <span className="ml-2 hidden md:inline">Rechercher</span>
+                </button>
+            </div>
+        </div>
+    );
+}
+
+export default Search;

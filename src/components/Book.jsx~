@@ -1,0 +1,17 @@
+import React from 'react'
+import CardBook from "./CardBook";
+import UnderLine from "../assets/images/Decos/Vector 4.png";
+import cardBook from "../assets/css/cardBook.css"
+
+function Book() {
+    
+    return (
+        <div className="container mx-auto px-4 py-4 mt-10 lg:px-[10%]" id="book">
+            <h1 className="text-4xl">Livres recommandés</h1>
+            <img src={UnderLine} alt="Underline decoration" className="ml-16"/>
+            <CardBook/>
+        </div>
+    )
+}
+
+export default Book

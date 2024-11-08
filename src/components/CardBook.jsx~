@@ -1,0 +1,238 @@
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import {fetchFile, getAllBooks} from "../apiConfig/services";
+
+function CardBook() {
+    const [selectedType, setSelectedType] = useState('All');
+    const [selectedKeywords, setSelectedKeywords] = useState([]);
+    const [books, setBooks] = useState([]);
+    const [covers, setCovers] = useState({});
+    const [loadingCovers, setLoadingCovers] = useState({}); // State to track the loading of covers
+    const [currentPage, setCurrentPage] = useState(1);
+    const booksPerPage = 12;
+    const location = useLocation();
+    const navigate = useNavigate();
+    const isHomePage = location.pathname === '/home' || location.pathname === '/';
+    const isLivresPage = location.pathname === '/livres';
+
+    const filteredBooks = books.filter(book =>
+        (selectedType === 'All' || book.typeFiche === selectedType) &&
+        (selectedKeywords.length === 0 || selectedKeywords.some(keyword => book.nom_dom.includes(keyword)))
+    );
+
+    const displayedBooks = isHomePage ? filteredBooks.slice(0, 8) : filteredBooks;
+
+    const indexOfLastBook = currentPage * booksPerPage;
+    const indexOfFirstBook = indexOfLastBook - booksPerPage;
+    const currentBooks = isLivresPage ? displayedBooks.slice(indexOfFirstBook, indexOfLastBook) : displayedBooks;
+
+    const totalPages = Math.ceil(displayedBooks.length / booksPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleVoirPlusClick = () => {
+        navigate('/livres');
+    };
+
+    const handleKeywordChange = (keyword) => {
+        setSelectedKeywords(prevKeywords =>
+            prevKeywords.includes(keyword)
+                ? prevKeywords.filter(kw => kw !== keyword)
+                : [...prevKeywords, keyword]
+        );
+    };
+
+    const handleClearFilters = () => {
+        setSelectedKeywords([]);
+    };
+
+    // Function to redirect to book details page
+    const handleBookClick = (bookId) => {
+        if (isLivresPage) {
+            navigate(`/livres/${bookId}`);
+        }
+    };
+
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const booksData = await getAllBooks();
+                setBooks(booksData);  // Set books data first
+
+                // Initialize loading covers state
+                const initialLoadingCovers = booksData.reduce((acc, book) => {
+                    acc[book.id_sup] = true; // Initially, all covers are loading
+                    return acc;
+                }, {});
+                setLoadingCovers(initialLoadingCovers);
+
+                // Fetch the covers for each book
+                const coverPromises = booksData.map(async (book) => {
+                    if (book.couverture_fiche) {
+                        const coverUrl = await fetchFile(book.couverture_fiche, "couverture");
+                        return {id_sup: book.id_sup, coverUrl};
+                    }
+                    return {id_sup: book.id_sup, coverUrl: null};
+                });
+
+                const coversData = await Promise.all(coverPromises);
+
+                // Create a covers dictionary with book IDs as keys
+                const coversDict = coversData.reduce((acc, {id_sup, coverUrl}) => {
+                    acc[id_sup] = coverUrl;
+                    return acc;
+                }, {});
+
+                setCovers(coversDict); // Set the cover URLs
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération des domaines', error);
+            }
+        };
+
+        fetchBooks();
+    }, []);
+
+    // Function called when the image is completely loaded
+    const handleImageLoaded = (bookId) => {
+        setLoadingCovers(prevLoadingCovers => ({
+            ...prevLoadingCovers,
+            [bookId]: false // Once the image is loaded, set its loading state to "false"
+        }));
+    };
+
+    const bookTypes = [...new Set(books.map(book => book.typeFiche))];
+
+    return (
+        <div className="container mx-auto flex flex-wrap mt-5">
+            {isLivresPage && (
+                <div className="w-full md:w-1/5 mb-8 md:mb-0 md:pr-8">
+                    <div className="flex flex-col mb-8">
+                        <div className="flex flex-wrap gap-4 mb-6">
+                            <button
+                                onClick={() => setSelectedType('All')}
+                                className={`block py-2 px-4 rounded-full ${selectedType === 'All' ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                            >
+                                Tous les domaines
+                            </button>
+                            {bookTypes.map(type => (
+                                <button
+                                    key={type}
+                                    onClick={() => setSelectedType(type)}
+                                    className={`block py-2 px-4 rounded-full ${selectedType === type ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex flex-col">
+                            <p className="font-semibold mb-2">Filtrer par titre:</p>
+                            {/* Use Set to avoid duplicate domains */}
+                            {Array.from(new Set(books.map(book => book.nom_dom))).map(domain => (
+                                <label key={domain} className="flex items-center mb-2">
+                                    <input
+                                        type="checkbox"
+                                        value={domain}
+                                        checked={selectedKeywords.includes(domain)}
+                                        onChange={() => handleKeywordChange(domain)}
+                                        className="mr-2"
+                                    />
+                                    {domain}
+                                </label>
+                            ))}
+                            <button
+                                onClick={handleClearFilters}
+                                className="mt-4 bg-red-500 text-white py-2 px-4 rounded"
+                            >
+                                Effacer les filtres
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div className={`w-full ${isLivresPage ? 'md:w-4/5' : 'md:w-full'} flex flex-col`}>
+                <div className={`grid grid-cols-1 gap-4 md:grid-cols-4 lg:grid-cols-3`}>
+                    {currentBooks.map(book => (
+                        <div
+                            key={book.id_sup}
+                            className="bg-blue-50 rounded-xl overflow-hidden h-80 mb-5 cursor-pointer"
+                            onClick={() => handleBookClick(book.id_sup)} // Adding click handler
+                        >
+                            <div className="relative h-56 flex justify-center items-center">
+                                {loadingCovers[book.id_sup] && (
+                                    <div
+                                        className="spinner border-t-2 border-primary border-solid rounded-full h-12 w-12 animate-spin"></div> // Spinner while loading
+                                )}
+                                <img
+                                    src={covers[book.id_sup] || 'fallback-image-url.jpg'}
+                                    alt={book.nom_dom}
+                                    className={`object-cover w-full h-full ${loadingCovers[book.id_sup] ? 'hidden' : ''}`} // Hide image while loading
+                                    onLoad={() => handleImageLoaded(book.id_sup)} // Call when image is loaded
+                                />
+                            </div>
+                            <div className="p-4 mb-16">
+                                <p className="bg-blue-200 font-bold inline py-1 px-3 text-[10px] rounded-full">{book.nom_dom}</p>
+                                <h2 className="text-xl font-bold">{book.nom_sup}</h2>
+                                <p className="text-gray-500">{book.nom_auteur}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {isLivresPage && (
+                    <div className="flex justify-center mt-5">
+                        <nav aria-label="Page navigation">
+                            <ul className="flex items-center space-x-1">
+                                <li>
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className={`px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-white'}`}
+                                    >
+                                        <ChevronLeftRoundedIcon/>
+                                    </button>
+                                </li>
+                                {[...Array(totalPages).keys()].map(pageNumber => (
+                                    <li key={pageNumber + 1}>
+                                        <button
+                                            onClick={() => handlePageChange(pageNumber + 1)}
+                                            className={`px-3 py-1 rounded ${currentPage === pageNumber + 1 ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                                        >
+                                            {pageNumber + 1}
+                                        </button>
+                                    </li>
+                                ))}
+                                <li>
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className={`px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-white'}`}
+                                    >
+                                        <ChevronRightRoundedIcon/>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                )}
+
+                {isHomePage && (
+                    <div className="flex justify-center mt-5">
+                        <button className="bg-gray-800 text-white font-bold py-3 pl-3 rounded-[10px] flex items-center"
+                                onClick={handleVoirPlusClick}>
+                            Voir plus
+                            <ChevronRightRoundedIcon className="ml-2"/>
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default CardBook;

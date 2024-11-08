@@ -1,0 +1,36 @@
+// Video.js
+import React, { useState } from 'react';
+import CardVideo from "./CardVideo";
+import UnderLine from "../assets/images/Decos/Vector 4.png";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import { useNavigate } from "react-router-dom";
+
+function Video() {
+    const [hasVideos, setHasVideos] = useState(true);
+    const navigate = useNavigate();
+
+    const handleVoirPlusClick = () => {
+        navigate('/videos');
+    };
+
+    // Masque le composant si aucune vidéo n'est disponible
+    if (!hasVideos) {
+        return null; // Ou un message alternatif si besoin
+    }
+
+    return (
+        <div className="container mx-auto py-4 mt-10 lg:px-[10%]" id="videos">
+            <h1 className="text-4xl">Vidéos recommandées</h1>
+            <img src={UnderLine} alt="Underline decoration" className="ml-16"/>
+            <CardVideo setHasVideos={setHasVideos} />
+            <div className="flex justify-center mt-5">
+                <button className="bg-gray-800 text-white font-bold py-3 pl-3 rounded-[10px] flex items-center" onClick={handleVoirPlusClick}>
+                    Voir plus
+                    <ChevronRightRoundedIcon className="ml-2"/>
+                </button>
+            </div>
+        </div>
+    );
+}
+
+export default Video;
