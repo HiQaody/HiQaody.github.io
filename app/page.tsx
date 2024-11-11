@@ -3,7 +3,6 @@ import React from "react";
 import {motion} from "framer-motion";
 import Title from "@/app/components/Title";
 import Cube from "@/app/components/Cube";
-import PC3D from "@/app/components/PC3D";
 
 export default function Home() {
     return (
@@ -19,10 +18,10 @@ export default function Home() {
                 <Title/>
             </div>
             <div id="cube">
-                <Cube/>
+
             </div>
             <div className="flex items-center justify-center h-screen" id="mandatement">
-                <h1>test</h1>
+                <Cube />
             </div>
         </motion.div>
     );

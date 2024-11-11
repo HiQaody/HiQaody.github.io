@@ -1,19 +1,59 @@
-import React from 'react';
+'use client';
+import React, {useEffect} from 'react';
 import MA from "../assets/images/Pub/photo 1.png";
 import Image from "next/image";
 import AnimatedTitle from "@/app/components/AnimatedTitle";
 
 function Title() {
+    useEffect(() => {
+        const particleContainer = document.querySelector(".particle-container");
+
+        const createParticle = () => {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+
+            // Append the particle to the container
+            particleContainer?.appendChild(particle);
+
+            // Remove the particle after animation
+            setTimeout(() => {
+                particle.remove();
+            }, 3000); // match the duration of the animation
+        };
+
+        // Create particles at intervals
+        const interval = setInterval(createParticle, 200);
+
+        // Cleanup particles after component unmounts
+        return () => clearInterval(interval);
+    }, []);
     return (
-        <div className="flex-grow flex items-center h-screen">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 w-full">
+        <div className="flex-grow flex items-center h-screen relative overflow-hidden">
+            {/* Particle effect container */}
+            <div className="particle-container">
+                {/* Static Particles */}
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+                <div className="particle"></div>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 w-full relative z-10">
                 {/* Text and Description Section */}
                 <div className="w-full lg:w-1/2 flex flex-col ">
                     <div className="space-y-6 lg:space-y-12">
                         {/* Introduction */}
                         <span className="text-lg text-gray-600 dark:text-gray-300">
-                        Salut, je suis
-                    </span>
+                            Salut, je suis
+                        </span>
 
                         <AnimatedTitle />
 
@@ -26,7 +66,7 @@ function Title() {
                                 pointe des dernières
                                 tendances et je suis prêt à affronter de nouveaux défis et à travailler ensemble sur des
                                 projets novateurs.
-                                Créons ensemble quelque chose d'exceptionnel.
+                                Créons ensemble quelque chose d&apos;exceptionnel.
                             </p>
                         </div>
                     </div>
@@ -37,7 +77,7 @@ function Title() {
                             <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary">03</span>
                             <div className="h-12 w-1.5 bg-white rounded-full mx-2"></div>
                             <span className="text-sm sm:text-base lg:text-lg whitespace-nowrap">
-                                Années d'expérience
+                                Années d&apos;expérience
                             </span>
                         </div>
 
