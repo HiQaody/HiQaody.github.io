@@ -2,7 +2,10 @@
 import React from "react";
 import {motion} from "framer-motion";
 import Title from "@/app/components/Title";
-import Cube from "@/app/components/Cube";
+import Competence from "@/app/components/Competence";
+import Projects from "@/app/components/Projects";
+import {Element} from 'react-scroll';
+import Contact from "@/app/components/Contact";
 
 export default function Home() {
     return (
@@ -14,15 +17,18 @@ export default function Home() {
                 transition: {duration: 0.5}
             }}
         >
-            <div id="title">
+            <Element name="title" id="title">
                 <Title/>
-            </div>
-            <div id="cube">
-
-            </div>
-            <div className="flex items-center justify-center h-screen" id="mandatement">
-                <Cube />
-            </div>
+            </Element>
+            <Element name="competence" id="competence">
+                <Competence />
+            </Element>
+            <Element name="projects" id="projects">
+                <Projects />
+            </Element>
+            <Element name="contact">
+                <Contact />
+            </Element>
         </motion.div>
     );
 }

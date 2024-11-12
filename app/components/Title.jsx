@@ -80,9 +80,10 @@ function Title() {
                                 Créons ensemble quelque chose d&apos;exceptionnel.
                             </p>
                         </div>
-                        {/* Bouton CV */}
-                        <CVDownload onClick={handleDownloadCV} />
+
                     </div>
+                    {/* Bouton CV */}
+                    <CVDownload onClick={handleDownloadCV}/>
                     {/* Stats */}
                     <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mt-16 lg:mt-20 xl:mt-24">
                         {/* Years of Experience */}

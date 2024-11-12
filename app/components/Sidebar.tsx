@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 import BtnNavLink from "@/app/components/BtnNavLink";
 import Image from "next/image";
 import Jacquinot from "@/app/assets/images/Pub/Group 1.png";
-
 import {
     Home,
     Code2,
     FolderGit2,
     Contact,
-    Download,
     Facebook,
     Mail,
     Github,
@@ -25,11 +23,8 @@ const Sidebar = () => {
         setIsOpen(!isOpen);
     };
 
-
-
     return (
         <>
-            {/* Bouton hamburger pour mobile */}
             <button
                 onClick={toggleSidebar}
                 className="lg:hidden fixed top-4 left-4 z-50 p-4 rounded-md shadow-md"
@@ -37,7 +32,6 @@ const Sidebar = () => {
                 {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            {/* Overlay pour mobile */}
             {isOpen && (
                 <div
                     className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -58,7 +52,6 @@ const Sidebar = () => {
                 `}
             >
                 <div className="p-4 flex flex-col items-center w-full">
-                    {/* Section profil */}
                     <div className="relative w-32 h-32">
                         <Image
                             src={Jacquinot}
@@ -73,7 +66,6 @@ const Sidebar = () => {
                     </h1>
                     <span className="text-sm ">Développeur FullStack</span>
 
-                    {/* Section réseaux sociaux */}
                     <div className="mt-4 w-full">
                         <ul className="flex justify-center space-x-4 text-[#0387FF]">
                             <li>
@@ -100,38 +92,18 @@ const Sidebar = () => {
                     </div>
                 </div>
 
-                {/* Séparateur */}
                 <div className="w-full px-4">
                     <hr className="border-t border-gray-200 dark:border-gray-700 my-4" />
                 </div>
 
-                {/* Navigation */}
                 <div className="flex flex-col flex-grow w-full px-4">
                     <nav className="flex flex-col space-y-2">
-                        <BtnNavLink
-                            scrollTo="title"  // Scroll to Title section
-                            icon={<Home className="w-5 h-5"/>}
-                            label="Accueil"
-                        />
-                        <BtnNavLink
-                            scrollTo="cube"  // Scroll to Cube section
-                            icon={<Code2 className="w-5 h-5"/>}
-                            label="Compétences"
-                        />
-                        <BtnNavLink
-                            scrollTo="mandatement"  // Scroll to Mandatement section
-                            icon={<FolderGit2 className="w-5 h-5"/>}
-                            label="Projets"
-                        />
-                        <BtnNavLink
-                            scrollTo="contacts"  // Scroll to Contacts section
-                            icon={<Contact className="w-5 h-5"/>}
-                            label="Contacts"
-                        />
+                        <BtnNavLink scrollTo="title" icon={<Home className="w-5 h-5"/>} label="Accueil" />
+                        <BtnNavLink scrollTo="competence" icon={<Code2 className="w-5 h-5"/>} label="Compétences" />
+                        <BtnNavLink scrollTo="projects" icon={<FolderGit2 className="w-5 h-5"/>} label="Projets" />
+                        <BtnNavLink scrollTo="contacts" icon={<Contact className="w-5 h-5"/>} label="Contacts" />
                     </nav>
                 </div>
-
-
             </div>
         </>
     );

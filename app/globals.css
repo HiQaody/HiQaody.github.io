@@ -184,3 +184,9 @@ body {
   }
 }
 
+.active {
+  color: #0387FF; /* Couleur bleue pour le bouton actif */
+  font-weight: bold;
+  text-decoration: underline; /* Par exemple */
+}
+

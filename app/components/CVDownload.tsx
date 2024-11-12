@@ -27,11 +27,11 @@ interface CVDownloadButtonProps {
 
 const CVDownloadButton = ({ onClick }: CVDownloadButtonProps) => {
     return (
-        <div className="p-4 w-full">
+        <div className="w-full flex">
             <motion.button
                 onClick={onClick}
                 type="button"
-                className="mt-8 px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors"
+                className=" flex mt-8 px-6 py-2 text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors"
                 variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
