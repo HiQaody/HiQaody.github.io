@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 import MA from "../assets/images/Pub/photo 1.png";
 import Image from "next/image";
-import AnimatedTitle from "@/app/components/AnimatedTitle";
+import CVDownload from "./CVDownload";
 
 function Title() {
     useEffect(() => {
@@ -29,6 +29,14 @@ function Title() {
         // Cleanup particles after component unmounts
         return () => clearInterval(interval);
     }, []);
+
+    function handleDownloadCV() {
+        const link = document.createElement('a');
+        link.href = '/cv/cv.pdf';
+        link.download = 'Jacquinot_CV.pdf';
+        link.click();
+    }
+
     return (
         <div className="flex-grow flex items-center h-screen relative overflow-hidden">
             {/* Particle effect container */}
@@ -55,7 +63,10 @@ function Title() {
                             Salut, je suis
                         </span>
 
-                        <AnimatedTitle />
+                        {/* Title */}
+                        <h1 className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-5 text-5xl text-white font-bold">Développeur
+                            Web FullStack</h1>
+
 
                         {/* Description */}
                         <div className="">
@@ -69,6 +80,8 @@ function Title() {
                                 Créons ensemble quelque chose d&apos;exceptionnel.
                             </p>
                         </div>
+                        {/* Bouton CV */}
+                        <CVDownload onClick={handleDownloadCV} />
                     </div>
                     {/* Stats */}
                     <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mt-16 lg:mt-20 xl:mt-24">
