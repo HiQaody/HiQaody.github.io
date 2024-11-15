@@ -4,10 +4,10 @@ import {Phone} from 'lucide-react';
 
 const Contact = () => {
     return (
-        <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 ">
+        <div className="text-gray-900 dark:text-gray-100 ">
             {/* Heading */}
             <div className="flex items-center py-4 gap-4">
-                <div className="h-12 w-1.5 bg-white rounded-full mx-2"></div>
+                <div className="h-12 w-1.5 dark:bg-white bg-blue-400 rounded-full mx-2"></div>
                 <span className="text-5xl font-bold">Contact détails</span>
             </div>
 
@@ -18,7 +18,7 @@ const Contact = () => {
             </p>
 
             <div
-                className="flex flex-col md:flex-row items-center justify-between p-8 rounded-lg shadow-lg">
+                className="flex flex-col md:flex-row items-center justify-between p-8 rounded-lg">
                 {/* Barre verticale et contact téléphonique */}
                 <div className="flex items-center flex-row md:flex-col md:items-start mb-6 md:mb-0">
                     <div className="w-1 h-20 bg-blue-600 dark:bg-blue-400 mr-4 md:mr-0 md:mb-4"></div>
@@ -50,20 +50,17 @@ const Contact = () => {
                 </div>
 
                 {/* Formulaire de contact */}
-                <div className="w-full md:w-1/2 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold mb-4">Contactez-moi</h2>
+                <div className="w-full md:w-1/2 p-4  rounded-lg">
                     <form className="space-y-4">
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-semibold mb-1">Email</label>
+                        <div className="">
                             <input
-                                type="email"
-                                id="email"
-                                className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Votre adresse email"
+                                type="text"
+                                name="nom_dom"
+                                className="border p-2 w-full rounded"
+                                placeholder="Nom du domaine"
                             />
                         </div>
                         <div>
-                            <label htmlFor="message" className="block text-sm font-semibold mb-1">Message</label>
                             <textarea
                                 id="message"
                                 rows={4}

@@ -64,7 +64,7 @@ function Title() {
                         </span>
 
                         {/* Title */}
-                        <h1 className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-5 text-5xl text-white font-bold">Développeur
+                        <h1 className="animate-typing overflow-hidden whitespace-nowrap border-r-4 dark:border-r-white pr-5 text-5xl dark:text-white font-bold">Développeur
                             Web FullStack</h1>
 
 
@@ -89,7 +89,7 @@ function Title() {
                         {/* Years of Experience */}
                         <div className="flex items-center gap-4">
                             <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary">03</span>
-                            <div className="h-12 w-1.5 bg-white rounded-full mx-2"></div>
+                            <div className="h-12 w-1.5 dark:bg-white bg-blue-400 rounded-full mx-2"></div>
                             <span className="text-sm sm:text-base lg:text-lg whitespace-nowrap">
                                 Années d&apos;expérience
                             </span>
@@ -98,7 +98,7 @@ function Title() {
                         {/* Deployed Projects */}
                         <div className="flex items-center gap-4">
                             <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary">03</span>
-                            <div className="h-12 w-1.5 bg-white rounded-full mx-2"></div>
+                            <div className="h-12 w-1.5 dark:bg-white bg-blue-400 rounded-full mx-2"></div>
                             <span className="text-sm sm:text-base lg:text-lg whitespace-nowrap">
                                 Projets déployés
                             </span>
@@ -120,7 +120,7 @@ function Title() {
 
                         {/* Image container */}
                         <div
-                            className="relative bg-white p-2 rounded-lg transform transition-transform hover:scale-105 ">
+                            className="relative dark:bg-gray-400 bg-white  p-2 rounded-lg transform transition-transform hover:scale-105 ">
                             <Image
                                 src={MA}
                                 alt="Jacquinot"

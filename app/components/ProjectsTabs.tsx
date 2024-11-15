@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Link2 } from 'lucide-react';
 
 type Project = {
     id: number;
@@ -109,7 +109,7 @@ const ProjectTabs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white px-8 py-4 overflow-auto">
+        <div className="min-h-screen text-white px-8 py-4 overflow-auto">
             {/* Tab Buttons */}
             <div className="flex flex-wrap justify-center gap-4 mb-12">
                 {['Tous', 'Web App', 'Frontend', 'Backend'].map(tab => (
@@ -127,7 +127,7 @@ const ProjectTabs = () => {
             </div>
 
             {/* Projects Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
                 <AnimatePresence>
                     {filteredProjects.map((project) => (
                         <motion.div
@@ -140,7 +140,7 @@ const ProjectTabs = () => {
                         >
                             <div className="bg-gray-800 rounded-xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
                                 {/* Image Container */}
-                                <div className="relative h-48 overflow-hidden">
+                                <div className="relative h-56 overflow-hidden">
                                     <img
                                         src={getPreviewUrl(project.link)}
                                         alt={`Aperçu de ${project.name}`}
@@ -179,10 +179,10 @@ const ProjectTabs = () => {
                                             href={project.link}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+                                            className="text-white border bg-blue-400 border-blue-50 p-4 rounded-full "
                                             aria-label={`Visiter ${project.name}`}
                                         >
-                                            <ExternalLink className="w-5 h-5" />
+                                            <Link2 />
                                         </a>
                                     </div>
 

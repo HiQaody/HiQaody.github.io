@@ -9,7 +9,7 @@ type CardCompetenceProps = {
 const CardCompetence: React.FC<CardCompetenceProps> = ({ icon, description }) => {
     return (
         <motion.div
-            className="w-64 h-64 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-4 flex flex-col justify-between"
+            className="w-64 h-64 bg-white dark:bg-slate-800 shadow-lg rounded-xl p-4 flex flex-col justify-between"
             style={{
                 perspective: "1000px", // Nécessaire pour l'effet 3D
             }}
@@ -30,7 +30,7 @@ const CardCompetence: React.FC<CardCompetenceProps> = ({ icon, description }) =>
             </div>
 
             {/* Description centrée */}
-            <div className="flex-1 flex items-center justify-center text-center text-gray-700 dark:text-gray-200 font-medium">
+            <div className="flex-1 flex items-center justify-center text-center text-gray-700 dark:text-slate-400 font-medium">
                 {description}
             </div>
         </motion.div>

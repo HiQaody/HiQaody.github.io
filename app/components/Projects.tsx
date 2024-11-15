@@ -34,7 +34,7 @@ function Projects() {
     }, []);
 
     return (
-        <div className="relative overflow-hidden text-white px-8">
+        <div className="relative overflow-hidden dark:text-white px-8">
             {/* Particles */}
             <div className="particle-container absolute inset-0">
                 {/* Static Particles */}
@@ -47,7 +47,7 @@ function Projects() {
 
             {/* Heading */}
             <div className="flex items-center py-4 gap-4">
-                <div className="h-12 w-1.5 bg-white rounded-full mx-2"></div>
+                <div className="h-12 w-1.5 dark:bg-white bg-blue-400 rounded-full mx-2"></div>
                 <span className="text-5xl font-bold">Projets deployés</span>
             </div>
 

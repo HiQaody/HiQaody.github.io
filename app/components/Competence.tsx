@@ -47,7 +47,7 @@ function Competence() {
     ];
 
     return (
-        <div className="relative overflow-hidden text-white px-8">
+        <div className="relative overflow-hidden  px-8">
             {/* Particles */}
             <div className="particle-container absolute inset-0">
                 {/* Static Particles */}
@@ -60,12 +60,12 @@ function Competence() {
 
             {/* Heading */}
             <div className="flex items-center py-4">
-                <div className="h-12 w-1.5 bg-white rounded-full mx-2"></div>
-                <span className="text-5xl font-bold">Ce que je fais</span>
+                <div className="h-12 w-1.5 dark:bg-white bg-blue-400 rounded-full mx-2"></div>
+                <span className="text-5xl font-bold ">Ce que je fais</span>
             </div>
 
             {/* Description */}
-            <p className="py-8 text-lg text-justify">
+            <p className="py-8 text-lg text-justify dark:text-slate-400">
                 J&apos;ai plus de 10 ans d&apos;expérience dans la création de logiciels pour des clients du monde entier.
                 Vous trouverez ci-dessous un aperçu rapide de mes principales compétences techniques et technologies que
                 j&apos;utilise. Vous souhaitez en savoir plus sur mon expérience ? Consultez mon CV en ligne et mon
