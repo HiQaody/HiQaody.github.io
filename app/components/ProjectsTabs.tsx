@@ -1,7 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Link2 } from 'lucide-react';
+import {  Link2 } from 'lucide-react';
+import Image from 'next/image'
 
 type Project = {
     id: number;
@@ -141,7 +142,7 @@ const ProjectTabs = () => {
                             <div className="bg-gray-800 rounded-xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
                                 {/* Image Container */}
                                 <div className="relative h-56 overflow-hidden">
-                                    <img
+                                    <Image
                                         src={getPreviewUrl(project.link)}
                                         alt={`Aperçu de ${project.name}`}
                                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
