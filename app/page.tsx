@@ -5,7 +5,6 @@ import Title from "@/app/components/Title";
 import Competence from "@/app/components/Competence";
 import Projects from "@/app/components/Projects";
 import {Element} from 'react-scroll';
-import Contact from "@/app/components/Contact";
 
 export default function Home() {
     return (
@@ -25,9 +24,6 @@ export default function Home() {
             </Element>
             <Element name="projects" id="projects">
                 <Projects />
-            </Element>
-            <Element name="contact">
-                <Contact />
             </Element>
         </motion.div>
     );
